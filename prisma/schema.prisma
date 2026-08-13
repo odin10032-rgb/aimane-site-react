@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// A product in the catalog. V1 launches with zero rows — the public catalog
+/// renders a clean "bientôt disponible" empty state until the admin adds some.
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  /// Product price stored as a whole amount in FCFA (XOF has no subunit in
+  /// practice). Kept as Int to avoid floating point rounding issues.
+  price       Int
+  /// Public URL of the product image (raw GitHub asset URL once the Worker has
+  /// committed the uploaded file, or a local fallback path in dev).
+  imageUrl    String
+  /// External sales link (systeme.io / Chariow / future Moneroo checkout).
+  buyUrl      String?
+  /// Sort order, lower comes first.
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Singleton row (id = "default") holding the editable hero / bio content.
+/// No-code editable from the admin so the owner never touches code.
+model SiteSettings {
+  id        String   @id @default("default")
+  /// Display name shown in the hero.
+  name      String
+  /// Short tagline / hook under the name.
+  tagline   String
+  /// Longer bio paragraph.
+  bio       String
+  /// Hero portrait photo URL.
+  photoUrl  String
+  /// Optional accent override (reserved for future theming). Default "gold".
+  accent    String   @default("gold")
+  updatedAt DateTime @updatedAt
+}

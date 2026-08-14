@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import path from 'node:path'
 import { defineConfig } from 'prisma/config'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
 
 export default defineConfig({
   schema: path.join('prisma', 'schema.prisma'),
@@ -10,7 +10,7 @@ export default defineConfig({
   },
   migrate: {
     async adapter() {
-      return new PrismaLibSql({
+      return new PrismaLibSQL({
         url: process.env.DATABASE_URL!,
         authToken: process.env.DATABASE_AUTH_TOKEN!,
       })
